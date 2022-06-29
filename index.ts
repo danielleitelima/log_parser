@@ -35,16 +35,29 @@ Welcome to log-parser!
 
 Please, set the input file path and an optional name for the output file.
 After processed, the output file will be saved in the same directory of the input file.
+If one of the lines in the input file is not valid, the program will skip it.
     `,
     MessageType.INFO
   );
 }
 
 function parseFile(file: String) {
-  // Implement parsing logic
-  const parsedFile = file.split(/\r?\n/).map(line => `Line from file: ${line}`).join("\n");
+  const lines = file.split('\n');
+  const parsedLines = lines.map(line => {
+    try{
+      const [timestamp, loglevel, rest] = line.split(' - ');
+      const json = JSON.parse(rest);
+      return {
+        timestamp: parseInt(timestamp),
+        loglevel,
+        json
+      }
+    }catch(e){
+      return null;
+    }
+  }).filter(line => line != null);
 
-  return parsedFile
+  return JSON.stringify(parsedLines);
 }
 
 async function askFilePath() {
@@ -78,15 +91,14 @@ async function askParsedFileName(defaultFileName: String) {
   const answer = await inquirer.prompt({
     name: 'fileName',
     type: 'input',
-    message: 'What would you like the output file to be called?',
+    message: 'How would you like the output file to be called?',
     default: `parsed_${defaultFileName}`
   });
 
   const fileName = answer.fileName
 
   if (!fileName) {
-    showMessage("A valid file name is required!", MessageType.ERROR);
-    process.exit(0);
+    finishWithErrorMessage("A valid file name is required!");
   }
 
   return fileName;
