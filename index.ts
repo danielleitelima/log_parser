@@ -10,6 +10,7 @@ enum MessageType {
   SUCCESS
 }
 
+// AMaximov: (II) - One of the main requirements is writing the OOP code
 (
   async () => {
     showRules()
