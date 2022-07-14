@@ -8,6 +8,8 @@ export default class FileRepositoryImpl implements FileRepository {
     await fileSystem.writeFile(file.path, file.content);
   }
   async getFromFileSystem(filePath: string): Promise<CustomFile> {
+    //TODO: (DIP) Use the factory, not `new`
+    //TODO: (Conv) Move the content reading to the separate statement
     return new CustomFile(filePath, path.basename(filePath), await fileSystem.readFile(filePath, 'utf8'));
   }
 }

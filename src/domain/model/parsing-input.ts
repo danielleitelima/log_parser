@@ -1,10 +1,14 @@
+//TODO?: (IL) Do we really want to define it as a class?
 export default class ParsingInput {
-  originalFilePath: string;
   parsedFileName: string;
   parsedFilePath: string;
-  
-  constructor(originalFilePath: string, parsedFileName: string, parsedFilePath: string) {
-    this.originalFilePath = originalFilePath;
+
+  //TODO: (Conv) You can define the fields as part of constructor signature
+  constructor(
+      public readonly originalFilePath: string,
+      parsedFileName: string,
+      parsedFilePath: string
+  ) {
     this.parsedFileName = parsedFileName;
     this.parsedFilePath = parsedFilePath;
   }

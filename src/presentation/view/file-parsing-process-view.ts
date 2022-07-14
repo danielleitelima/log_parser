@@ -7,21 +7,24 @@ import { MessageType, MessageView } from "./message-view";
 
 export default class FileParsingProcessView {
     private parsingInput: ParsingInput;
-    
+
     constructor(parsingInput: ParsingInput) {
         this.parsingInput = parsingInput;
     }
-    
+
+    //TODO: (OCP) The method `show`  do the file parsing for some reason, instead of showing.
     async show(){
         const spinner = new SpinnerView();
-        
+
         spinner.show();
-        
+        //TODO: (DIP) Use dependency injection
         const fileRepository = new FileRepositoryImpl();
         const parseFileUseCase = new ParseFileUseCase(this.parsingInput, new LogEntryParsingStrategy, fileRepository);
         const parsedFile = await parseFileUseCase.execute();
+        //TODO: (IL) Not awaited/caught Promise => Unhandled Promise Rejection;
+        // Also the next messages will be shown to the user before the file will be written to the FS
         fileRepository.writeToFileSystem(parsedFile);
-        
+
         spinner.hide();
         new MessageView(`File ${parsedFile.name} created!`, MessageType.SUCCESS).show();
     }
